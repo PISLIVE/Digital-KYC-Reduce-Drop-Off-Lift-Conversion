@@ -1,0 +1,231 @@
+ <!-- HDFC-style header -->
+  <div class="top-nav-wrapper">
+    <div class="top-nav">
+      <div class="nav-left">
+  <img src="https://s7ap1.scene7.com/is/content/hdfcbankPWS/hdfc-bank-logo?fmt=webp" class="hdfc-logo" alt="HDFC Bank Logo">
+  <div>
+    <div class="nav-title-main">HDFC Bank</div>
+    <div class="nav-title-sub">Digital KYC | Secure Customer</div>
+  </div>
+</div>
+
+      </div>
+      <div class="nav-right">
+        <div class="nav-pill">Session ID: D-KYC-1024(It will differ in real sceneario)</div>
+        <div class="nav-pill">Mode: Full KYC</div>
+
+      </div>
+    </div>
+    <div class="nav-strip"></div>
+  </div>
+
+  <div class="page-container">
+    <div class="hero-label">Digital Onboarding KYC</div>
+    <div class="hero-heading">Complete your Digital KYC with HDFC Bank</div>
+    <div class="hero-subtitle">
+      This prototype simulates an HDFC-style digital KYC journey and demonstrates how better UX, validations,
+      and risk-based checks can reduce drop-offs, that bring faster turnaround time, and improve first time KYC experience.
+    </div>
+
+    <div class="layout-shell">
+      <!-- LEFT: Journey summary -->
+      <div class="card">
+        <div class="card-header">
+          <h2>Your KYC Journey</h2>
+          <span>Live status & attempts</span>
+        </div>
+        <div class="card-body" id="journeyPanel">
+          <div class="journey-step" data-left-step="1">
+            <div class="bullet active">1</div>
+            <div>
+              <div class="journey-text-title">Select Documents</div>
+              <div class="journey-text-sub">PAN + Aadhaar mandatory for digital KYC.</div>
+            </div>
+          </div>
+          <div class="journey-step" data-left-step="2">
+            <div class="bullet">2</div>
+            <div>
+              <div class="journey-text-title">Scan Documents</div>
+              <div class="journey-text-sub">Ensure full document, no glare, clear details.</div>
+            </div>
+          </div>
+          <div class="journey-step" data-left-step="3">
+            <div class="bullet">3</div>
+            <div>
+              <div class="journey-text-title">Upload Documents</div>
+              <div class="journey-text-sub">Files validated and checked for duplicates.</div>
+            </div>
+          </div>
+          <div class="journey-step" data-left-step="4">
+            <div class="bullet">4</div>
+            <div>
+              <div class="journey-text-title">Photo & Approval</div>
+              <div class="journey-text-sub">Photo match & final KYC decision.</div>
+            </div>
+          </div>
+
+          <div class="journey-meta" id="journeyMeta">
+            Attempts used (all steps): 0 / 12<br />
+            KYC risk flag: Low<br />
+            Status: In progress
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: KYC wizard -->
+      <div class="card">
+        <div class="card-header">
+          <h2>Digital KYC – Individual Customer</h2>
+          <span>All fields are mandatory unless specified</span>
+        </div>
+        <div class="card-body">
+          <div class="progress-bar-container">
+            <div class="progress-bar" id="progressBar"></div>
+          </div>
+          <div class="step-indicator" id="stepIndicator"></div>
+          <div class="attempts-info" id="attemptsInfo"></div>
+          <div class="overall-info" id="overallInfo"></div>
+
+          <h1 class="kyc-title">Complete your KYC</h1>
+          <p class="subtitle">
+            This is a prototype. In an real production system, the model will connect to HDFC’s main KYC engine,
+            face-match services, and backend rule engines.
+          </p>
+
+          <!-- STEP 1 -->
+          <div class="step active" data-step="1">
+            <div class="form-group">
+              <label for="identityDoc">
+                Proof of Identity
+                <span class="inline-pill">PAN / Aadhaar / Passport</span>
+              </label>
+              <select id="identityDoc">
+                <option value="">-- Select Identity Document --</option>
+                <option value="PAN">PAN Card</option>
+                <option value="AADHAAR">Aadhaar Card</option>
+                <option value="PASSPORT">Passport</option>
+              </select>
+              <div id="identityError" class="field-error"></div>
+            </div>
+
+            <div class="form-group">
+              <label for="addressDoc">
+                Proof of Address
+                <span class="inline-pill">Aadhaar / Passport / Voter ID</span>
+              </label>
+              <select id="addressDoc">
+                <option value="">-- Select Address Document --</option>
+                <option value="AADHAAR">Aadhaar Card</option>
+                <option value="PASSPORT">Passport</option>
+                <option value="VOTER">Voter ID</option>
+              </select>
+              <div id="addressError" class="field-error"></div>
+            </div>
+
+            <div class="form-group">
+              <label for="passportValidity">Passport validity (months remaining) – only if passport used</label>
+              <input type="text" id="passportValidity" placeholder="e.g., 8" />
+              <p class="hint">System will ensure passport has at least 6 months validity.</p>
+              <div id="passportError" class="field-error"></div>
+            </div>
+
+            <div id="msgStep1" class="message"></div>
+
+            <div class="buttons">
+              <span></span>
+              <button class="btn-primary" id="btnStep1" onclick="handleStep1()">Save & Continue</button>
+            </div>
+          </div>
+
+          <!-- STEP 2 -->
+          <div class="step" data-step="2">
+            <div class="form-group">
+              <label>
+                <input type="checkbox" id="scanConfirm" />
+                I confirm the document is clearly visible, in good lighting and all four corners are visible.
+              </label>
+              <div id="scanError" class="field-error"></div>
+            </div>
+            <p class="hint">
+              In production, this step will use camera for the image-quality checks to reduce rejections
+              at the scanning stage.
+            </p>
+
+            <div id="msgStep2" class="message"></div>
+
+            <div class="buttons">
+              <button class="btn-secondary" onclick="goToPrev()">Back</button>
+              <button class="btn-primary" id="btnStep2" onclick="handleStep2()">Proceed to Upload</button>
+            </div>
+          </div>
+
+          <!-- STEP 3 -->
+          <div class="step" data-step="3">
+            <div class="form-group">
+              <label for="docFile">Upload scanned KYC document</label>
+              <input type="file" id="docFile" />
+              <p class="hint">
+                Accepted formats: JPG, PNG, PDF. This prototype only checks that a file is selected to simulate the validations.
+              </p>
+              <div id="uploadError" class="field-error"></div>
+            </div>
+
+            <div class="form-group">
+              <label>
+                <input type="checkbox" id="duplicateConfirm" />
+                I confirm this document is not already registered for another HDFC account.
+              </label>
+              <div id="duplicateError" class="field-error"></div>
+            </div>
+
+            <div id="msgStep3" class="message"></div>
+
+            <div class="buttons">
+              <button class="btn-secondary" onclick="goToPrev()">Back</button>
+              <button class="btn-primary" id="btnStep3" onclick="handleStep3()">Proceed to Photo</button>
+            </div>
+          </div>
+
+          <!-- STEP 4 -->
+          <div class="step" data-step="4">
+            <div class="form-group">
+              <label for="photoFile">Upload passport-size photograph</label>
+              <input type="file" id="photoFile" />
+              <div id="photoError" class="field-error"></div>
+            </div>
+
+            <div class="form-group">
+              <label for="selfieFile">Upload real-time selfie (simulating live capture)</label>
+              <input type="file" id="selfieFile" />
+              <div id="selfieError" class="field-error"></div>
+            </div>
+
+            <div class="form-group">
+              <label>
+                <input type="checkbox" id="faceMatchConfirm" />
+                I confirm my selfie clearly matches the uploaded photograph.
+              </label>
+              <div id="faceMatchError" class="field-error"></div>
+            </div>
+
+            <div id="msgStep4" class="message"></div>
+            <div id="loaderStep4" class="loader-text"></div>
+
+            <div class="buttons">
+              <button class="btn-secondary" onclick="goToPrev()">Back</button>
+              <button class="btn-primary" id="btnStep4" onclick="handleStep4()">Complete KYC</button>
+            </div>
+          </div>
+
+          <!-- FINAL STATUS -->
+          <div class="step" data-step="5">
+            <div class="final-status" id="finalStatus"></div>
+            <div style="text-align:center; margin-top:12px;">
+              <button class="btn-secondary" onclick="restartJourney()">Start a New KYC Journey</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
