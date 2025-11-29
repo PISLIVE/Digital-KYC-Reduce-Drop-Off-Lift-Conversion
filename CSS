@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>HDFC Bank - Digital KYC Prototype</title>
+  <style>
+    :root {
+      --hdfc-red: #ED1C24;
+      --hdfc-blue: #004C8F;
+      --bg-grey: #f2f4f7;
+      --border-grey: #d7dce5;
+      --text-dark: #1f2933;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Times New Roman", system-ui, -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+      background: var(--bg-grey);
+      margin: 0;
+      padding: 0;
+      color: var(--text-dark);
+    }
+
+    /* Top HDFC-like navigation */
+    .top-nav-wrapper {
+      background: var(--hdfc-blue);
+      color: #ffffff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+    }
+    .hdfc-logo {
+  height: 42px;
+  width: auto;
+  object-fit: contain;
+  margin-right: 10px;
+}
+
+
+    .top-nav {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 10px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .hdfc-logo-box {
+      width: 44px;
+      height: 44px;
+      border-radius: 4px;
+      background: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--hdfc-blue);
+      font-weight: 800;
+      font-size: 16px;
+    }
+
+    .nav-title-main {
+      font-weight: 700;
+      font-size: 18px;
+      letter-spacing: 0.03em;
+    }
+
+    .nav-title-sub {
+      font-size: 11px;
+      opacity: 0.85;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 11px;
+    }
+
+    .nav-pill {
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.5);
+      padding: 4px 10px;
+      background: rgba(255,255,255,0.08);
+    }
+
+    .nav-login-btn {
+      border-radius: 999px;
+      background: #ffffff;
+      color: var(--hdfc-blue);
+      font-weight: 600;
+      padding: 6px 12px;
+      border: none;
+      cursor: pointer;
+      font-size: 11px;
+    }
+
+    .nav-strip {
+      height: 3px;
+      background: var(--hdfc-red);
+    }
+
+    /* Main page layout */
+    .page-container {
+      max-width: 1200px;
+      margin: 24px auto 40px;
+      padding: 0 24px;
+    }
+
+    .hero-label {
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--hdfc-blue);
+      margin-bottom: 4px;
+    }
+
+    .hero-heading {
+      font-size: 22px;
+      font-weight: 600;
+      color: #111827;
+      margin-bottom: 6px;
+    }
+
+    .hero-subtitle {
+      font-size: 12px;
+      color: #4b5563;
+      max-width: 680px;
+      margin-bottom: 18px;
+    }
+
+    .layout-shell {
+      display: grid;
+      grid-template-columns: 290px minmax(0, 1fr);
+      gap: 20px;
+      align-items: flex-start;
+    }
+
+    .card {
+      background: #ffffff;
+      border-radius: 8px;
+      border: 1px solid var(--border-grey);
+      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
+    }
+
+    .card-header {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border-grey);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .card-header h2 {
+      margin: 0;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--hdfc-blue);
+    }
+
+    .card-header span {
+      font-size: 11px;
+      color: #6b7280;
+    }
+
+    .card-body {
+      padding: 16px 18px 18px;
+    }
+
+    /* Left: Journey summary (like HDFC menu / journey pane) */
+    .journey-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 12px;
+      font-size: 13px;
+    }
+
+    .bullet {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      border: 2px solid #d1d5db;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 600;
+      color: #6b7280;
+      background: #ffffff;
+    }
+
+    .bullet.active {
+      border-color: var(--hdfc-red);
+      background: var(--hdfc-red);
+      color: #ffffff;
+    }
+
+    .bullet.completed {
+      border-color: #16a34a;
+      background: #16a34a;
+      color: #ffffff;
+    }
+
+    .journey-text-title {
+      font-weight: 600;
+      color: #111827;
+    }
+
+    .journey-text-sub {
+      font-size: 11px;
+      color: #6b7280;
+    }
+
+    .journey-meta {
+      margin-top: 16px;
+      font-size: 11px;
+      color: #4b5563;
+      border-top: 1px dashed #e5e7eb;
+      padding-top: 10px;
+    }
+
+    /* Right: KYC wizard */
+    .progress-bar-container {
+      background: #e5e7eb;
+      border-radius: 999px;
+      height: 8px;
+      overflow: hidden;
+      margin-bottom: 10px;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0;
+      background: var(--hdfc-red);
+      transition: width 0.3s ease;
+    }
+
+    .step-indicator {
+      font-size: 12px;
+      margin-bottom: 3px;
+      color: #4b5563;
+    }
+
+    .attempts-info,
+    .overall-info {
+      font-size: 11px;
+      color: #6b7280;
+      margin-bottom: 6px;
+    }
+
+    .overall-info {
+      margin-bottom: 14px;
+    }
+
+    .kyc-title {
+      margin: 0 0 4px;
+      font-size: 18px;
+      color: #111827;
+      font-weight: 600;
+    }
+
+    .subtitle {
+      font-size: 12px;
+      color: #4b5563;
+      margin-bottom: 14px;
+    }
+
+    .step {
+      display: none;
+      margin-top: 4px;
+    }
+
+    .step.active {
+      display: block;
+    }
+
+    .form-group {
+      margin-bottom: 14px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 4px;
+      font-weight: 600;
+      font-size: 13px;
+      color: #111827;
+    }
+
+    select,
+    input[type="file"],
+    input[type="text"] {
+      width: 100%;
+      padding: 7px 8px;
+      border-radius: 6px;
+      border: 1px solid #d1d5db;
+      box-sizing: border-box;
+      font-size: 13px;
+      background: #ffffff;
+    }
+
+    select:focus,
+    input[type="file"]:focus,
+    input[type="text"]:focus {
+      outline: 2px solid var(--hdfc-blue);
+      outline-offset: 1px;
+      border-color: var(--hdfc-blue);
+    }
+
+    input[type="checkbox"] {
+      margin-right: 5px;
+    }
+
+    .hint {
+      font-size: 11px;
+      color: #6b7280;
+      margin-top: 3px;
+    }
+
+    .field-error {
+      font-size: 11px;
+      color: var(--hdfc-red);
+      margin-top: 3px;
+    }
+
+    .inline-pill {
+      display: inline-block;
+      font-size: 11px;
+      padding: 2px 6px;
+      border-radius: 999px;
+      border: 1px solid #fee2e2;
+      background: #fef2f2;
+      color: #b91c1c;
+      margin-left: 4px;
+    }
+
+    .buttons {
+      margin-top: 16px;
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    button {
+      padding: 8px 14px;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 13px;
+    }
+
+    .btn-primary {
+      background: var(--hdfc-blue);
+      color: #ffffff;
+    }
+
+    .btn-secondary {
+      background: #e5e7eb;
+      color: #111827;
+    }
+
+    .btn-disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .message {
+      margin-top: 8px;
+      font-size: 12px;
+    }
+
+    .message.error {
+      color: var(--hdfc-red);
+    }
+
+    .message.success {
+      color: #15803d;
+    }
+
+    .loader-text {
+      font-size: 11px;
+      color: #4b5563;
+      margin-top: 8px;
+      font-style: italic;
+    }
+
+    .final-status {
+      text-align: center;
+      margin-top: 10px;
+    }
+
+    .final-status h2 {
+      margin-bottom: 8px;
+      font-size: 20px;
+    }
+
+    .summary-table {
+      margin: 14px auto 8px;
+      border-collapse: collapse;
+      font-size: 11px;
+      min-width: 80%;
+    }
+
+    .summary-table th,
+    .summary-table td {
+      border: 1px solid #e5e7eb;
+      padding: 5px 8px;
+      text-align: left;
+    }
+
+    .summary-table th {
+      background: #f9fafb;
+      font-weight: 600;
+    }
+
+    .status-chip {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      background: #ecfdf3;
+      color: #166534;
+      border: 1px solid #bbf7d0;
+      margin-top: 4px;
+    }
+
+    .status-chip.review {
+      background: #fef9c3;
+      color: #92400e;
+      border-color: #facc15;
+    }
+
+    .status-chip.rejected {
+      background: #fee2e2;
+      color: #b91c1c;
+      border-color: #fecaca;
+    }
+
+    @media (max-width: 920px) {
+      .layout-shell {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .top-nav {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+      }
+
+      .nav-right {
+        width: 100%;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+      }
+    }
+  </style>
+</head>
+<body>
